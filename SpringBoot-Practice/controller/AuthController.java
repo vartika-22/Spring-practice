@@ -1,4 +1,4 @@
-package com.spring.log.controller;
+package com.springboot.practic.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.log.config.JwtProvider;
-import com.spring.log.model.User;
-import com.spring.log.repository.UserRepository;
-import com.spring.log.request.LoginRequest;
-import com.spring.log.service.CustomUserDetailsService;
+import com.springboot.practic.config.JwtProvider;
+import com.springboot.practic.model.User;
+import com.springboot.practic.repository.UserRepository;
+import com.springboot.practic.request.LoginRequest;
+import com.springboot.practic.service.CustomUserDetailsService;
 
 @RestController
 @RequestMapping("/auth")
