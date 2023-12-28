@@ -45,16 +45,16 @@ public class UserController {
 	
 	
 	@PutMapping("/api/users/{id}")
-	public User updateUser(@RequestBody User user,@PathVariable Integer id){
-		User reqUser=userService.findUserById(id);
+	public User updateUser(@RequestHeader("Authorization")String jwt,@RequestBody User user){
+		User reqUser=userService.findUserByJwt(jwt);
 		
 		User updatedUser=userService.updateUser(user, reqUser.getId());
 		return updatedUser;
 	}
 	
-	@PutMapping("/api/users/{id1}/follow/{id2}")
-	public User followUser(@PathVariable Integer id1, @PathVariable Integer id2) throws Exception {
-		User reqUserId=userService.findUserById(id1);
+	@PutMapping("/api/users/follow/{id2}")
+	public User followUser(@RequestHeader("Authorization")String jwt,@PathVariable Integer id2) throws Exception {
+		User reqUserId=userService.findUserByJwt(jwt);
 		User user=userService.followUser(reqUserId.getId(), id2);
 		return user;
 	}
@@ -65,5 +65,18 @@ public class UserController {
 	}
 	
 	
+	@GetMapping("/api/users/search")
+	public List<User> searchUser(@RequestParam("query") String query){
+		List<User> users=userService.searchUser(query);
+		return  users;
+		
+	}
+	@GetMapping("/api/users/profile")
+	public User getUserFormToken(@RequestHeader("Authorization")String jwt) {
+		
+		User user=userService.findUserByJwt(jwt);
+		user.setPassword(null);
+		return user;
+	}
 	
 }
