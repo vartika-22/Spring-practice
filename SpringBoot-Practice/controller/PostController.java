@@ -1,4 +1,4 @@
-package com.springboot.practic.controller;
+package com.spring.log.controller;
 
 import java.util.List;
 
@@ -11,20 +11,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
-
-import com.springboot.practic.model.Post;
-import com.springboot.practic.model.User;
-import com.springboot.practic.repository.PostRepository;
-import com.springboot.practic.response.ApiResponse;
-import com.springboot.practic.service.PostService;
-import com.springboot.practic.service.UserService;
+import com.spring.log.model.Post;
+import com.spring.log.model.User;
+import com.spring.log.repository.PostRepository;
+import com.spring.log.response.ApiResponse;
+import com.spring.log.service.PostService;
+import com.spring.log.service.UserService;
 
 @RestController
 public class PostController {
+
 	@Autowired
 	PostService postService;
 	@Autowired
