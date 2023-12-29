@@ -12,10 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 
 import com.springboot.practic.model.Post;
 import com.springboot.practic.model.User;
 import com.springboot.practic.repository.PostRepository;
+import com.springboot.practic.response.ApiResponse;
 import com.springboot.practic.service.PostService;
 import com.springboot.practic.service.UserService;
 
@@ -28,49 +32,49 @@ public class PostController {
 	@Autowired
 	UserService userService;
 	
-	@PostMapping("/api/users/{userId}/posts")
-	public Post createPost(@RequestBody Post post,@PathVariable Integer userId){
-		User user=userService.findUserById(userId);
-		Post creatPost=postService.createPost(post,user.getId());
-		return creatPost;
+	@PostMapping("/api/posts")
+	public ResponseEntity<Post> createPost(@RequestHeader("Authorization")String jwt,@RequestBody Post post){
+		User userId=userService.findUserByJwt(jwt);
+		Post creatPost=postService.createPost(post, userId.getId());
+		return new ResponseEntity<>(creatPost,HttpStatus.ACCEPTED);
 	}
 	@DeleteMapping("/api/posts/{postId}")
-	public String deletePost(@PathVariable Integer postId){
-		
-		String message=postService.deletePost(postId);
-		
-		return "deleted Successfully";
+	public ResponseEntity<ApiResponse> deletePost(@RequestHeader("Authorization")String jwt,@PathVariable Integer postId){
+		User userId=userService.findUserByJwt(jwt);
+		String message=postService.deletePost(postId, userId.getId());
+		ApiResponse res=new ApiResponse(message,true);
+		return new ResponseEntity<ApiResponse>(res,HttpStatus.OK);
 	}
 	
 	@GetMapping("/api/posts/{postId}")
-	public Post findPostById(@PathVariable Integer postId){
+	public ResponseEntity<Post> findPostById(@PathVariable Integer postId){
 		Post post=postService.findPostById(postId);
-		return post;
+		return new ResponseEntity<Post>(post,HttpStatus.ACCEPTED);
 	}
 	
 	@GetMapping("/api/posts/user/{id}")
-	public List<Post> findUsersPost(@PathVariable Integer id){
+	public ResponseEntity<List<Post>> findUsersPost(@PathVariable Integer id){
 		List<Post> post=postService.findPostByUserId(id);
-		return post;
+		return new ResponseEntity<List<Post>>(post,HttpStatus.OK);
 	}
 	
 	@GetMapping("/api/posts")
-	public List<Post> findAllPost(){
+	public ResponseEntity<List<Post>> findAllPost(){
 		List<Post> post=postService.findAllPost();
-		return post;
+		return new ResponseEntity<List<Post>>(post,HttpStatus.OK);
 	}
 	
-	@PutMapping("/api/users/{userId}/posts/save/{postId}")
-	public Post savedPost(@PathVariable Integer postId,@PathVariable Integer userId){
-		User user=userService.findUserById(userId);
-		Post post=postService.savePost(postId, user.getId());
-		return post;
+	@PutMapping("/api/posts/save/{postId}")
+	public ResponseEntity<Post> savedPost(@PathVariable Integer postId,@RequestHeader("Authorization")String jwt){
+		User userId=userService.findUserByJwt(jwt);
+		Post post=postService.savePost(postId, userId.getId());
+		return new ResponseEntity<Post>(post,HttpStatus.ACCEPTED);
 	}	
 	
-	@PutMapping("/api/users/{userId}/posts/like/{postId}")
-	public Post likedPost(@PathVariable Integer postId,@PathVariable Integer userId){
-		User user=userService.findUserById(userId);
-		Post post=postService.likePost(postId, user.getId());
-		return post;
+	@PutMapping("/api/posts/like/{postId}")
+	public ResponseEntity<Post> likedPost(@PathVariable Integer postId,@RequestHeader("Authorization")String jwt){
+		User userId=userService.findUserByJwt(jwt);
+		Post post=postService.likePost(postId, userId.getId());
+		return new ResponseEntity<Post>(post,HttpStatus.ACCEPTED);
 	}
 }
