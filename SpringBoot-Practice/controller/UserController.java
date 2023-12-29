@@ -1,4 +1,4 @@
-package com.springboot.practic.controller;
+package com.spring.log.controller;
 
 import java.util.List;
 
@@ -9,16 +9,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springboot.practic.model.User;
-import com.springboot.practic.repository.UserRepository;
-import com.springboot.practic.service.UserService;
+import com.spring.log.model.User;
+import com.spring.log.repository.UserRepository;
+import com.spring.log.service.UserService;
 
 @RestController
 public class UserController {
-
-
+	
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
