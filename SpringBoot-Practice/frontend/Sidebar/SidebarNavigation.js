@@ -14,12 +14,12 @@ export const navigationMenu = [
   {
     title: "Reels",
     icon: <Explore style={{color:"#26678A"}} />,
-    path: "/reel",
+    path: "/home/reel",
   },
   {
     title: "Create Reels",
     icon: <ControlPointIcon style={{color:"#26678A"}} />,
-    path: "/create-reels",
+    path: "/home/create-reels",
   },
   {
     title: "Notification",
@@ -29,7 +29,7 @@ export const navigationMenu = [
   {
     title: "Message",
     icon: <Message style={{color:"#26678A"}} />,
-    path: "/",
+    path: "/home/message",
   },
   {
     title: "Lists",
