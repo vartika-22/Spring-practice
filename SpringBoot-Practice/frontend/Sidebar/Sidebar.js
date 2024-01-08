@@ -2,15 +2,16 @@ import React from "react";
 import { navigationMenu } from "./SidebarNavigation";
 import Logo from "../Images/Logo.png";
 import Menu from "@mui/material/Menu";
-import { Avatar, Button, Card, Divider, MenuItem, colors } from "@mui/material";
+import { Avatar, Button, Card, Divider, IconButton, MenuItem, colors } from "@mui/material";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowRight from "@mui/icons-material/ArrowRight";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Logout from "@mui/icons-material/Logout";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import MoreVert from "@mui/icons-material/MoreVert";
-import { Link } from 'react-router-dom';
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../Redux/Auth/auth.action";
 
 const logoImage = {
   width: "100px",
@@ -21,7 +22,9 @@ const logoImage = {
 
 const Sidebar = () => {
   const auth = useSelector(state => state.auth);
-  console.log("Auth:",auth)
+  console.log("Auth:",auth);
+  const navigate=useNavigate();
+  const dispatch=useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -29,6 +32,12 @@ const Sidebar = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleLogout = ()=>{
+    localStorage.removeItem("jwt");
+    dispatch(logout());
+    navigate("/");
+    console.log("Logout success")
   };
 
   const getCurrentUser = () => {
@@ -73,7 +82,7 @@ const Sidebar = () => {
                 className="opacity-80"
                 style={{ marginTop: "-10px" }}
               >
-                <small>{auth.user.id}</small>
+                <small>{}@userid</small>
               </p>
             </div>
           </div>
@@ -102,11 +111,10 @@ const Sidebar = () => {
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuItem onClick={handleClose}>
-              Logout{"  "}
-              <span>
-                <Logout style={{ marginLeft: "10px" }} />
-              </span>
+            <MenuItem onClick={handleClose} style={{maxHeight:"30px"}}>
+              <Button onClick={handleLogout}><small>Logout</small>
+                <Logout style={{ margin: "0px"}} />
+              </Button>
             </MenuItem>
           </Menu>
         </div>
