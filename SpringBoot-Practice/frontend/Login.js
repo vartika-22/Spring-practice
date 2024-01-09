@@ -28,8 +28,9 @@ const Login = () => {
     const token = response.data.token;
     localStorage.setItem("jwt", token);
     console.log("Token stored:", token);
-
     dispatch(loginUserAction({data:values,type: LOGIN_SUCCESS}));
+    navigate("/home");
+    window.location.reload();
     
    }catch(error){
     console.log("Error---",error.response.data)
