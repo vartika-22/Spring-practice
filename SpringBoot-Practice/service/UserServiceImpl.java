@@ -1,16 +1,18 @@
-package com.springboot.practic.service;
+package com.spring.log.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.springboot.practic.model.User;
-import com.springboot.practic.repository.UserRepository;
+import com.spring.log.config.JwtProvider;
+import com.spring.log.model.User;
+import com.spring.log.repository.UserRepository;
 
 @Service
-public class UserServiceImpl implements UserService{
-
+public class UserServiceImpl implements UserService {
+	
 	@Autowired
 	private UserRepository userRepository;
 
@@ -43,13 +45,14 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User findByEmail(String email) {
-		User userByEmail= userRepository.findByEmail(email);
-		return userByEmail;
+		User user=userRepository.findByEmail(email);
+		return user;
 	}
 
 	@Override
-	public User followUser(Integer id1, Integer id2) {
-		User reqUser=findUserById(id1);
+	public User followUser(Integer reqUserId, Integer id2) {
+		
+		User reqUser=findUserById(reqUserId);
 		User user2=findUserById(id2);
 		user2.getFollowers().add(reqUser.getId());
 		reqUser.getFollowings().add(user2.getId());
@@ -60,7 +63,8 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User updateUser(User user, Integer id) {
-Optional<User> user1=userRepository.findById(id);
+	
+		Optional<User> user1=userRepository.findById(id);
 		
 		if(user1.isEmpty()) {
 			System.out.println("User does not exist");
@@ -82,11 +86,23 @@ Optional<User> user1=userRepository.findById(id);
 		if(user.getGender()!=null) {
 			oldUser.setGender(user.getGender());
 		}
+		oldUser.setImageUrl(user.getImageUrl());
 		User updateUser=userRepository.save(oldUser);
 		return updateUser;
 	}
 
-	
-	
+	@Override
+	public List<User> searchUser(String query) {
+		
+		return userRepository.searchUser(query);
+	}
 
+	@Override
+	public User findUserByJwt(String jwt) {
+		String email=JwtProvider.getEmailFromJwtToken(jwt);
+		User user=userRepository.findByEmail(email);
+		return user;
+	}
 }
+
+	
