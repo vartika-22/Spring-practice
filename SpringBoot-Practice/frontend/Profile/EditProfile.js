@@ -1,4 +1,4 @@
-import React , { useState} from 'react';
+import React , { useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { uploadToCloudnary } from '../../utils/uploadToCloudnary';
 import Image from '@mui/icons-material/Image';
 import { updateProfileAction } from '../../Redux/Auth/auth.action';
+import Edit from '@mui/icons-material/Edit';
 
 const style = {
   position: 'absolute',
@@ -18,9 +19,7 @@ const style = {
   backgroundColor: "#F5FBFB",
   border: "2px solid #26678A",
   boxShadow: 24,
-  padding: "50px",
   borderRadius: "10px",
-  p: 4,
   
 };
 
@@ -30,13 +29,31 @@ const EditProfile=({ open, handleClose })=> {
   const [gender,setGender]=useState(auth.user?.gender);
   const [isloading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(auth.user?.imageUrl);
+  const [selectCoverImage,setImageCoverUrl]=useState(auth.user?.coverImageUrl)
   const [firstName,setFirstName]=useState(auth.user?.firstName);
   const [lastName,setLastName]=useState(auth.user?.lastName);
   const dispatch=useDispatch();
+
+  useEffect(() => {
+    if (auth.user) {
+      setGender(auth.user.gender);
+      setSelectedImage(auth.user.imageUrl);
+      setFirstName(auth.user.firstName);
+      setLastName(auth.user.lastName);
+      setImageCoverUrl(auth.user.coverImageUrl);
+    }
+  }, [auth.user]);
+
   const handleSelectImage = async (event) => {
     setIsLoading(true);
     const imageUrl = await uploadToCloudnary(event.target.files[0], "image");
     setSelectedImage(imageUrl);
+    setIsLoading(false);
+  };
+  const handleSelectCoverImage = async (event) => {
+    setIsLoading(true);
+    const imageCoverUrl = await uploadToCloudnary(event.target.files[0], "image");
+    setImageCoverUrl(imageCoverUrl)
     setIsLoading(false);
   };
   const handleChange=(event)=>{
@@ -57,6 +74,7 @@ const EditProfile=({ open, handleClose })=> {
         firstName,
         lastName,
         gender,
+        coverImageUrl:selectCoverImage
       };
       dispatch(updateProfileAction(profileData,user.id))
       console.log("Data-: ",profileData)
@@ -82,11 +100,28 @@ const EditProfile=({ open, handleClose })=> {
       >
         <Box sx={style}>
           <form onSubmit={handleProfileSubmit}>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
-              <Avatar style={{ width: "150px", height: "150px", fontSize: "40px" ,border: "3px solid white" ,backgroundColor:"#26678A",marginTop:"30px"}} src={selectedImage}>
+            <div>
+                <img src={selectCoverImage} style={{height:"200px",width:"400px"}}/>
+            </div>
+            <div style={{display:'flex',justifyContent:"end"}}>
+            <Avatar style={{marginTop:"-15px",backgroundColor:"#26678A",border: "2px solid white",marginRight:"15px",height:"25px",width:"25px"}}>
+                <label htmlFor="cover-image-input">
+                  <Edit style={{ color: "white",fontSize:"15px"}} />
+                </label>
+                <input
+                  type="file"
+                  id="cover-image-input"
+                  accept="image/*"
+                  onChange={handleSelectCoverImage}
+                  style={{ border: "none", display: "none" }}
+                />
+              </Avatar>
+              </div>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column",marginTop:"-100px" }}>
+              <Avatar style={{ width: "150px", height: "150px", fontSize: "40px" ,border: "3px solid white" ,marginTop:"10px"}} src={selectedImage}>
                {auth.user?.firstName?.toUpperCase().charAt(0) + auth.user?.lastName?.toUpperCase().charAt(0)}
               </Avatar>
-              <Avatar style={{marginTop:"-30px",marginLeft:"70px",backgroundColor:"#26678A",border: "2px solid white",marginBottom:"20px"}}>
+              <Avatar style={{marginTop:"-40px",marginLeft:"85px",backgroundColor:"#26678A",border: "2px solid white",marginBottom:"20px"}}>
                 <label htmlFor="image-input">
                   <Image style={{ color: "white"}} />
                 </label>
@@ -99,7 +134,7 @@ const EditProfile=({ open, handleClose })=> {
                 />
               </Avatar>
             </div>
-            <div>
+            <div style={{margin:"40px"}}>
             <div style={{margin:"20px"}}>
                 <label>FirstName : </label>
                 <input onChange={(e)=> setFirstName(e.target.value)} value={firstName} style={{padding:"4px"}}/>
@@ -116,7 +151,7 @@ const EditProfile=({ open, handleClose })=> {
               </RadioGroup>
             </div>
             </div>
-            <div style={{display:"flex",justifyContent:"right"}}>
+            <div style={{display:"flex",justifyContent:"right",margin:"10px"}}>
                 <Button type='submit'>Update</Button>
             </div>
           </form>
