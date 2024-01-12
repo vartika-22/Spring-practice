@@ -1,4 +1,5 @@
-import * as React from "react";
+// Inside ProfileTabs.js
+import React, { useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -6,25 +7,34 @@ import { useParams } from "react-router-dom";
 import { Card } from "@mui/material";
 import PostCard from "../Posts/PostCard";
 import UserReelsCard from "../Reels/UserReelsCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsersPostAction } from "../../Redux/Post/post.action";
+import Reels from "../Reels/Reels";
 
 const tabs = [
   { value: "post", name: "Post" },
   { value: "reels", name: "Reels" },
   { value: "saved", name: "Saved-Post" },
-  { value: "repost", name: "Repost" },
 ];
 
-const reels = [1, 2, 6, 7];
 const savedPost = [1, 2, 2, 4, 4];
-const repost = [2, 3, 4, 5, 2];
-export default function ProfileTabs() {
-  const { id } = useParams();
-  const [value, setValue] = React.useState("post");
-  const posts= useSelector(state => state.post);
+
+const ProfileTabs = () => {
+  const [value, setValue] = useState("post");
+  const auth = useSelector((store) => store.auth);
+  const post = useSelector((store) => store.post);
+  const reel=useSelector(store=>store.reel)
+  const dispatch = useDispatch();
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (value === "post") {
+      dispatch(getUsersPostAction(auth.user.id));
+    }
+  }, [dispatch, value, auth.user.id]);
 
   return (
     <div style={{ marginLeft: "-10px" }}>
@@ -36,6 +46,14 @@ export default function ProfileTabs() {
           borderColor: "divider",
         }}
       >
+        <div
+          style={{
+            backgroundColor: "#26678A",
+            height: "2px",
+            marginLeft: "-40px",
+            marginTop: "20px",
+          }}
+        ></div>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -43,46 +61,42 @@ export default function ProfileTabs() {
           indicatorColor="primary"
           aria-label="secondary tabs example"
         >
-          {tabs.map((items) => (
+          {tabs.map((item) => (
             <Tab
-              value={items.id}
-              label={items.title}
+              key={item.value}
+              value={item.value}
+              label={item.name}
               wrapped
-              style={{ marginRight: "20px", fontSize: "15px" }}
+              style={{ marginRight: "230px", fontSize: "15px" }}
             />
           ))}
         </Tabs>
       </Box>
       <div className="flex justify-center">
-        <div style={{ width: "70%", marginTop: "10px" }}>
+        <div >
           {value === "post" ? (
-            <div>
-              {posts.posts.map((item) => (
-                <div>
-                  <PostCard />
-                </div>
-              ))}
+            <div style={{ marginTop: "15px" }}>
+              {post.usersPosts.map((item) => (
+                  <div>
+                    <PostCard item={item} createdAt={item.createdAt}/>
+                  </div>
+                ))}
             </div>
           ) : value === "reels" ? (
-            <div className="flex flex-wrap justify-center gap-2 my-10">
-              {reels.map((items) => (
-                <UserReelsCard />
+            <div style={{marginLeft:"-60px",marginTop:"-40px"}}>
+                <Reels userId={auth.user.id} withSidebar={false} />
+            </div>
+          ) : value === "saved" && (
+            <div className="flex-wrap justify-center gap-2 my-10">
+              {savedPost.map((item) => (
+                <PostCard key={item} />
               ))}
             </div>
-          ) : value === "saved" ?
-            <div className=" flex-wrap justify-center gap-2 my-10">
-              {savedPost.map((items) =>
-                <PostCard />
-              )}
-            </div>: value === "repost" ? 
-            <div className="flex flex-wrap justify-center gap-2 my-10">
-              {repost.map((items) => 
-                <PostCard/>
-              )}
-            </div>:(""
           )}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default ProfileTabs;
