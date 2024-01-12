@@ -10,7 +10,9 @@ import Edit from "@mui/icons-material/Edit";
 
 const Profile = () => {
   const { auth } = useSelector((store) => store);
-
+  // console.log("cover", auth.user.coverImageUrl)
+  const post = useSelector((store) => store.post);
+  const reel=useSelector(store=>store.reel)
   const [isEditProfileOpen, setEditProfileOpen] = useState(false);
   const handleEditProfileOpen = () => {
     setEditProfileOpen(true);
@@ -18,6 +20,7 @@ const Profile = () => {
   const handleEditProfileClose = () => {
     setEditProfileOpen(false);
   };
+
   return (
     <div>
       <Sidebar />
@@ -29,25 +32,13 @@ const Profile = () => {
           <div>
             <div>
               <img
-                src="https://wallpapercave.com/wp/UI82ILn.jpg"
+                src={auth.user.coverImageUrl}
                 alt="cover"
                 style={{ height: "300px" }}
                 className="w-full"
               />
             </div>
-            <div style={{ display: "flex", justifyContent: "end" }}>
-              <Avatar
-                style={{
-                  backgroundColor: "#26678A",
-                  color: "white",
-                  border: "2px solid white",
-                  marginTop: "-20px",
-                  marginRight: "20px",
-                }}
-              >
-                <Edit></Edit>
-              </Avatar>
-            </div>
+            
             <div className='"px-5 flex flex-row justify-between items-start mt-5 h-[5rem]'>
               <Avatar
                 src={auth.user?.imageUrl}
@@ -91,23 +82,23 @@ const Profile = () => {
               style={{
                 marginTop: "-100px",
                 textAlign: "right",
-                marginRight: "150px",
+                marginRight: "10%",
                 marginBottom: "50px",
               }}
             >
-              <Button style={{ color: "#26678A", marginLeft: "40px" }}>
-                {} Posts
+              <Button style={{ color: "#26678A", marginLeft: "35px" }}>
+              {post.usersPosts.length+reel.reels.length} Posts
               </Button>
               <span>
-                <Button style={{ color: "#26678A", marginLeft: "40px" }}>
+                <Button style={{ color: "#26678A", marginLeft: "35px" }}>
                   {auth.user.followings?.length || 0} Following
                 </Button>
               </span>
-              <Button style={{ color: "#26678A", marginLeft: "40px" }}>
+              <Button style={{ color: "#26678A", marginLeft: "35px" }}>
                 {auth.user.followers?.length || 0} Follower
               </Button>
             </div>
-            <div style={{ textAlign: "left", marginLeft: "60px" }}>
+            <div style={{ textAlign: "left", marginLeft: "60px",marginTop:"-15px" }}>
               <h1 style={{ fontSize: "25px" }}>
                 <b>{auth.user.firstName + " " + auth.user.lastName}</b>
               </h1>
