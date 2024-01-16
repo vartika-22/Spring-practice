@@ -1,21 +1,51 @@
 import { Avatar } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllStoriesAction } from "../../Redux/Story/story.action";
+import StoryModal from "./StoryModal";
 
-const StoryCirlce = () => {
+const StoryCircle = (story) => {
+ 
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedStory,setSelectedStory]=useState(null);
+  const handleOpenModal = (user,story) => {
+    setSelectedUser(user);
+    setSelectedStory(story);
+    console.log("selected user",story);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedUser(null);
+    setSelectedStory(null);
+  };
   return (
-    <div style={{paddingRight:"30px"}} >
-      <div className="py-3 flex flex-col items-ceter rounded-b-md">
-        <Avatar
-          sx={{ width: "25px", height: "25px" }}
-          src="https://1.bp.blogspot.com/-72y4WoOLmR0/XlRUm2OG7AI/AAAAAAAAmfA/okWPZNrYJVI4goO1RZ1xMPAr9YseWDV2ACLcBGAsYHQ/s2560/cute-white-cat-1080x1920.jpg"
-          className="flex flex-col items-center mr-4 cursor-pointer"
+    <div style={{ paddingRight: "30px" }}>
+      
+        <div  className="py-3 flex flex-col items-center rounded-b-md">
+          <Avatar
+            sx={{ width: "25px", height: "25px" }}
+            src={story.story.user.imageUrl}
+            className="flex flex-col items-center mr-4 cursor-pointer"
+            onClick={() => handleOpenModal(story.story.user,story.story)}
+          />
+          <p>
+            <small style={{ opacity: "60px", color: "white", marginLeft: "-10px" }}>{story.story.user.firstName}</small>
+          </p>
+        </div>
+      
+      {selectedUser && (
+        <StoryModal
+          open={!!selectedUser}
+          onClose={handleCloseModal}
+          storyImage={selectedStory.image}
+          imageUrl={selectedUser.imageUrl}
+          userName={`${selectedUser.firstName} ${selectedUser.lastName}`}
+          caption={selectedStory.caption}
         />
-        <p>
-          <small style={{ opacity: "60px",color:"white" ,marginLeft:"-10px"}}>username</small>
-        </p>
-      </div>
+      )}
+      
     </div>
   );
 };
 
-export default StoryCirlce;
+export default StoryCircle;
