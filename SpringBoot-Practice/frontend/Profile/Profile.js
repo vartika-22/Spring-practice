@@ -5,21 +5,35 @@ import Button from "@mui/material/Button";
 import ProfileTabs from "./ProfileTabs";
 import { useSelector } from "react-redux";
 import EditProfile from "./EditProfile";
-import EditIcon from "@mui/icons-material/Edit";
 import Edit from "@mui/icons-material/Edit";
+import { FollowerModal } from "./FollowerModal";
+import { FollowingModal } from "./FollowingModal";
 
 const Profile = () => {
-  const { auth } = useSelector((store) => store);
-  // console.log("cover", auth.user.coverImageUrl)
+  const auth  = useSelector((store) => store.auth);
   const post = useSelector((store) => store.post);
   const reel=useSelector(store=>store.reel)
   const [isEditProfileOpen, setEditProfileOpen] = useState(false);
+  const [isFollowerOpen,setFollowerOpen]=useState(false);
+  const [isFollowingOpen,setFollowingOpen]=useState(false);
   const handleEditProfileOpen = () => {
     setEditProfileOpen(true);
   };
   const handleEditProfileClose = () => {
     setEditProfileOpen(false);
   };
+  const handleFollowerOpen=()=>{
+    setFollowerOpen(true);
+  }
+  const handleFollowerClose=()=>{
+    setFollowerOpen(false);
+  }
+  const handleFollowingOpen=()=>{
+    setFollowingOpen(true);
+  }
+  const handleFollowingClose=()=>{
+    setFollowingOpen(false);
+  }
 
   return (
     <div>
@@ -89,14 +103,20 @@ const Profile = () => {
               <Button style={{ color: "#26678A", marginLeft: "35px" }}>
               {post.usersPosts.length+reel.reels.length} Posts
               </Button>
+              
               <span>
-                <Button style={{ color: "#26678A", marginLeft: "35px" }}>
-                  {auth.user.followings?.length || 0} Following
+                <Button style={{ color: "#26678A", marginLeft: "35px" }} onClick={handleFollowingOpen} >
+                  {auth.user.followings?.followings?.length } Following
                 </Button>
+                <FollowingModal open={isFollowingOpen}
+                handleClose={handleFollowingClose} followings={auth.user.followings}/>
+                
               </span>
-              <Button style={{ color: "#26678A", marginLeft: "35px" }}>
-                {auth.user.followers?.length || 0} Follower
+              <Button style={{ color: "#26678A", marginLeft: "35px" }} onClick={handleFollowerOpen}>
+                {auth.user.followers?.followers?.length || 0} Follower
               </Button>
+              <FollowerModal open={isFollowerOpen}
+                handleClose={handleFollowerClose} followers={auth.user.followers}/>
             </div>
             <div style={{ textAlign: "left", marginLeft: "60px",marginTop:"-15px" }}>
               <h1 style={{ fontSize: "25px" }}>
