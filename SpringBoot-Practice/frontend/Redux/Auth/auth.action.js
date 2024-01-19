@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ALL_USERS_FAILURE, GET_ALL_USERS_REQUEST, GET_ALL_USERS_SUCCESS, GET_PROFILE_FAILURE, GET_PROFILE_REQUEST, GET_PROFILE_SUCCESS, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_SUCCESS, UPDATE_PROFILE_FAILURE, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS } from "./auth.actionType";
+import { GET_ALL_USERS_FAILURE, GET_ALL_USERS_REQUEST, GET_ALL_USERS_SUCCESS, GET_PROFILE_FAILURE, GET_PROFILE_REQUEST, GET_PROFILE_SUCCESS, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_SUCCESS, SEARCH_USER_FAILURE, SEARCH_USER_REQUEST, SEARCH_USER_SUCCESS, UPDATE_FOLLOW_STATE, UPDATE_PROFILE_FAILURE, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS } from "./auth.actionType";
 import api, { API_BASE_URL } from "../../Components/Config/api";
 
 export const loginUserAction=(loginData)=>async(dispatch)=>{
@@ -53,13 +53,13 @@ export const logout = () => (dispatch) => {
   export const getProfileAction=(jwt)=>async(dispatch)=>{
     dispatch({type:GET_PROFILE_REQUEST})
     try {
-        const {data}=await axios.get(`${API_BASE_URL}/api/users/profile`,
+        const {data}=await api.get(`${API_BASE_URL}/api/users/profile`,
         {
             headers:{
             "Authorization":`Bearer ${jwt}`
         },
     });
-        console.log("Profile",data)
+        // console.log("Profile",data)
         dispatch({type:GET_PROFILE_SUCCESS,payload:data})
     } catch (error) {
         console.log("------------------",error)
@@ -84,9 +84,31 @@ export const getAllUsersAction=()=>async(dispatch)=>{
     dispatch({type: GET_ALL_USERS_REQUEST});
     try{
         const {data}=await api.get(`${API_BASE_URL}/api/users`);
-        dispatch({type:GET_ALL_USERS_SUCCESS,payload:data});
-        console.log("Allusers :",data)
+        dispatch({type:GET_ALL_USERS_SUCCESS,payload:data})
+        console.log("Allusers ",data)
     } catch (error) {
     dispatch({ type: GET_ALL_USERS_FAILURE, payload: error });
 }
+}
+export const updateFollowState = (followedUsers) => {
+    return (dispatch) => {
+      // Dispatch an action to update the Redux state with the stored followed users
+      dispatch({
+        type: UPDATE_FOLLOW_STATE,
+        payload: followedUsers,
+      });
+    };
+  };
+
+  export const searchUserAction=(query)=>async(dispatch)=>{
+    dispatch({type:SEARCH_USER_REQUEST})
+    try {
+
+        const {data}=await api.get(`${API_BASE_URL}/api/users/search?query=${query}`);
+        console.log("search-data",data)
+        dispatch({type:SEARCH_USER_SUCCESS,payload:data})
+    } catch (error) {
+        console.log("------------------",error)
+        dispatch({type:SEARCH_USER_FAILURE,payload:error})   
+    }
 }
