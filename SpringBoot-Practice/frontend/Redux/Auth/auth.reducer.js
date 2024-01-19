@@ -11,6 +11,8 @@ import {
   REGISTER_FAILURE,
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
+  SEARCH_USER_SUCCESS,
+  UPDATE_FOLLOW_STATE,
 } from "./auth.actionType";
 
 const storedToken = localStorage.getItem("jwt");
@@ -21,8 +23,8 @@ const initialState = {
     firstName: null,
     lastName: null,
     email: null,
-    followers: null,
-    followings: null,
+    followers: [],
+    followings:[],
     imageUrl: null,
     gender: null,
     coverImageUrl:null
@@ -30,6 +32,8 @@ const initialState = {
   error: null,
   loading: false,
   allUsers: [],
+  followedUsers: [],
+  searchUser:[]
 };
 
 export const authReducer = (state = initialState, action) => {
@@ -46,8 +50,8 @@ export const authReducer = (state = initialState, action) => {
           firstName: action.payload.firstName,
           lastName: action.payload.lastName,
           email: action.payload.email,
-          followers: action.payload.followers,
-          followings: action.payload.followings,
+          followers: action.payload,
+          followings:action.payload,
           imageUrl: action.payload.imageUrl,
           gender: action.payload.gender,
           coverImageUrl:action.payload.coverImageUrl
@@ -90,7 +94,13 @@ export const authReducer = (state = initialState, action) => {
       };
     case GET_ALL_USERS_FAILURE:
       return { ...state, loading: false, error: action.payload };
-
+    case UPDATE_FOLLOW_STATE:
+      return {
+        ...state,
+        followedUsers: action.payload,
+      };
+    case SEARCH_USER_SUCCESS:
+      return {...state,searchUser:action.payload,loading:false,error:null}
     default:
       return state;
   }
