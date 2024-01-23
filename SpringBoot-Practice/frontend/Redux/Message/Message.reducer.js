@@ -3,7 +3,6 @@ import { CREATE_CHAT_REQUEST, CREATE_CHAT_SUCCESS, CREATE_MESSAGE_REQUEST, CREAT
 const initialState={
     message:[],
     chats:[],
-    
     loading:false,
     error:null,
     message:null,
